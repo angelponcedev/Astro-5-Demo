@@ -1,0 +1,21 @@
+---
+// Server Island
+import { SCORE_API_ENDPOINT } from "astro:env/server";
+
+let scoreValue = "0"; // Default value
+
+try {
+  const res = await fetch(SCORE_API_ENDPOINT);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch score: ${res.status} ${res.statusText}`);
+  }
+  scoreValue = await res.text();
+} catch (error) {
+  console.error("Error fetching score:", error);
+  // Keep using the default value
+}
+---
+
+<span class="text-xs" id="score">
+  Score: {scoreValue.trim()}/5
+</span>

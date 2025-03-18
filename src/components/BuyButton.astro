@@ -1,0 +1,25 @@
+---
+import AmazonLogo from "./AmazonLogo.astro"
+const SPAIN = 'ES'
+
+// Se puede obtener el pais de origen desde el hedear de Vercel
+const country = Astro.request.headers.get('X-Vercel-IP-Country') ?? 'ES'
+const storeCountry = country === SPAIN ? 'spain' : 'mexico'
+const countryname = country === SPAIN ? 'España' : 'Mexico'
+
+const { buy } = Astro.props
+const url = buy[storeCountry]
+---
+
+<a 
+href={url}
+title="Comprar en México"
+target="_blank"
+rel="noopener noreferrer"
+class="text-balance inline-flex gap-2 items-center bg-yellow-400
+hover:bg-yellow-500 active:bg-yellow-600 text-black font-bold
+py-2 px-4 rounded-lg border border-yellow-500 transition duration-200 
+ease-in-out hover:scale-105 justify-center text-center">
+    Comprar en Amazon Mexico
+    <AmazonLogo/>
+</a>

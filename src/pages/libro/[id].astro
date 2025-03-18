@@ -1,0 +1,51 @@
+---
+export const prerender = true
+
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { SHOW_BUY_BUTTON } from "astro:env/server";
+import BookScore from "../../components/BookScore.astro";
+import BuyButton from "../../components/BuyButton.astro";
+
+export async function getStaticPaths(){
+    const books = await getCollection('books');
+
+    return books.map((book) => ({
+        params: {id: book.slug},
+        props: {book}
+    })) 
+}
+
+const { book } = Astro.props;
+const { data, slug } =  book;
+const { title, author, img, readtime, description, buy } = data;
+
+const { Content } = await render(book);
+---
+
+<Layout title={`${title} - Dev Books`}>
+    <div class="flex gap-12">
+        <aside class="flex flex-col items-center gap-4 max-w-sm">
+            <img 
+            src={`/${img}`}
+            class="rounded w-auto h-auto"
+            transition:name={`img-${slug}`}>
+            <!-- Enlace para Comprar -->
+             {
+                SHOW_BUY_BUTTON && <BuyButton server:defer buy={buy}/>
+             }
+             <BookScore server:defer id={slug}>
+                <span slot="fallback" class="text-xs opacity-70"> Cargando puntuacion...</span>
+             </BookScore>
+        </aside>
+        <main class="max-w-3xl">
+            <h1 class="text-4xl font-bold mb-4"
+            transition:name={`title-${slug}`}>
+                {title}
+            </h1>
+            <div class="prose prose-invert">
+                <Content />
+            </div>
+        </main>
+    </div>
+</Layout> 
